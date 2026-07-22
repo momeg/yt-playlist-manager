@@ -143,6 +143,22 @@
               <span class="filter-desc">Private, deleted, or region-locked</span>
             </span>
           </label>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-first-n">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Top N videos</span>
+              <span class="filter-desc">Delete a specific number of videos from the top</span>
+            </span>
+          </label>
+
+          <div class="age-slider-container hidden" id="n-input-container">
+            <div class="age-slider-header">
+              <span>Number of videos to select:</span>
+            </div>
+            <input type="number" id="filter-n-count" min="1" max="5000" value="50" style="width: 100%; padding: 6px; border-radius: var(--radius-sm); background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); font-family: inherit;">
+          </div>
         </div>
       </div>
 

@@ -28,9 +28,12 @@
     filterLost: $('#filter-lost'),
     filterOld: $('#filter-old'),
     filterUnavailable: $('#filter-unavailable'),
+    filterFirstN: $('#filter-first-n'),
     filterAgeMonths: $('#filter-age-months'),
     ageValue: $('#age-value'),
     ageSliderContainer: $('#age-slider-container'),
+    nInputContainer: $('#n-input-container'),
+    filterNCount: $('#filter-n-count'),
     btnScan: $('#btn-scan'),
     scanStatus: $('#scan-status'),
     statMatched: $('#stat-matched'),
@@ -131,6 +134,14 @@
     }
   }
 
+  function onFirstNToggle() {
+    if (els.filterFirstN.checked) {
+      els.nInputContainer.classList.remove('hidden');
+    } else {
+      els.nInputContainer.classList.add('hidden');
+    }
+  }
+
   function onAgeSliderChange() {
     const months = parseInt(els.filterAgeMonths.value, 10);
     if (months >= 12) {
@@ -186,13 +197,20 @@
     const wantLost = els.filterLost.checked;
     const wantOld = els.filterOld.checked;
     const wantUnavailable = els.filterUnavailable.checked;
+    const wantFirstN = els.filterFirstN.checked;
+    
     const ageThreshold = parseInt(els.filterAgeMonths.value, 10);
+    const nCount = parseInt(els.filterNCount.value, 10) || 0;
 
     filteredItems = allItems.filter((item) => {
       const reasons = [];
 
       if (wantAll) {
         reasons.push('all');
+      }
+
+      if (wantFirstN && item.index < nCount) {
+        reasons.push('first-n');
       }
 
       if (wantWatched && item.watchProgress != null && item.watchProgress >= 90) {
@@ -277,6 +295,9 @@
       if (item._matchReasons?.includes('lost')) {
         const pct = Math.round(item.watchProgress || 0);
         badgeHTML += `<span class="result-badge badge-lost" style="background: rgba(33, 150, 243, 0.15); color: #64b5f6;">💤 Lost interest (${pct}%)</span>`;
+      }
+      if (item._matchReasons?.includes('first-n')) {
+        badgeHTML += '<span class="result-badge badge-first-n" style="background: rgba(255, 193, 7, 0.15); color: #ffd54f;">🔝 Top</span>';
       }
       if (item._matchReasons?.includes('old')) {
         badgeHTML += '<span class="result-badge badge-old" style="background: rgba(156, 39, 176, 0.15); color: #ce93d8;">🕐 Old</span>';
@@ -454,6 +475,7 @@
   // ================ Event Listeners ================
   els.btnScan.addEventListener('click', startScan);
   els.filterOld.addEventListener('change', onOldFilterToggle);
+  els.filterFirstN.addEventListener('change', onFirstNToggle);
   els.filterAgeMonths.addEventListener('input', onAgeSliderChange);
   els.btnSelectAll.addEventListener('click', selectAll);
   els.btnDeselectAll.addEventListener('click', deselectAll);
@@ -468,6 +490,7 @@
 
   // Init state
   onOldFilterToggle();
+  onFirstNToggle();
   onAgeSliderChange();
 
   // Boot
