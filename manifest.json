@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "YT Playlist Manager",
+  "version": "1.0.0",
+  "description": "Bulk manage and clean up YouTube playlists — delete watched, old, or partially viewed videos in one click.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "power"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "YT Playlist Manager"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/playlist*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

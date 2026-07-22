@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=420, initial-scale=1.0">
+  <title>YT Playlist Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="3" width="20" height="4" rx="1" fill="url(#grad1)" opacity="0.9"/>
+            <rect x="2" y="10" width="14" height="4" rx="1" fill="url(#grad1)" opacity="0.7"/>
+            <rect x="2" y="17" width="18" height="4" rx="1" fill="url(#grad1)" opacity="0.5"/>
+            <path d="M18 13L22 17L18 21" stroke="#cc0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="24" y2="0">
+                <stop offset="0%" stop-color="#FF0000"/>
+                <stop offset="100%" stop-color="#FF6B6B"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="header-title">Playlist Manager</h1>
+      </div>
+    </header>
+
+    <!-- Not on Playlist Page -->
+    <section id="screen-no-playlist" class="screen">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <h2>Open a YouTube Playlist</h2>
+        <p class="empty-desc">Navigate to any YouTube playlist page to get started. Works with Watch Later, Liked Videos, and custom playlists.</p>
+        <div class="quick-links">
+          <a href="https://www.youtube.com/playlist?list=WL" target="_blank" class="quick-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Watch Later
+          </a>
+          <a href="https://www.youtube.com/playlist?list=LL" target="_blank" class="quick-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Liked Videos
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Screen -->
+    <section id="screen-main" class="screen hidden">
+      <!-- Current playlist indicator -->
+      <div class="playlist-banner" id="playlist-banner">
+        <div class="playlist-banner-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </div>
+        <div class="playlist-banner-info">
+          <span class="playlist-banner-title" id="playlist-title">—</span>
+          <span class="playlist-banner-meta" id="playlist-meta">—</span>
+        </div>
+      </div>
+
+      <!-- Filter Criteria -->
+      <div class="card" id="card-filters">
+        <label class="card-label">Filter Criteria</label>
+        <div class="filter-group">
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-all">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">All videos</span>
+              <span class="filter-desc">Select every video (fully clean playlist)</span>
+            </span>
+          </label>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-watched" checked>
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Fully watched</span>
+              <span class="filter-desc">Videos you've completed (≥90%)</span>
+            </span>
+          </label>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-partial">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Started watching</span>
+              <span class="filter-desc">Partially watched videos (5–90%)</span>
+            </span>
+          </label>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-lost">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Lost interest</span>
+              <span class="filter-desc">Abandoned midway (40–80%)</span>
+            </span>
+          </label>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-old">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Published long ago</span>
+              <span class="filter-desc">Older than the threshold below</span>
+            </span>
+          </label>
+
+          <div class="age-slider-container hidden" id="age-slider-container">
+            <div class="age-slider-header">
+              <span>Age threshold</span>
+              <span class="age-value" id="age-value">12 months</span>
+            </div>
+            <input type="range" id="filter-age-months" min="1" max="60" value="12" class="age-slider">
+            <div class="age-slider-labels">
+              <span>1 mo</span>
+              <span>5 yrs</span>
+            </div>
+          </div>
+
+          <label class="filter-toggle">
+            <input type="checkbox" id="filter-unavailable">
+            <span class="toggle-slider"></span>
+            <span class="filter-text">
+              <span class="filter-title">Unavailable videos</span>
+              <span class="filter-desc">Private, deleted, or region-locked</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Scan Button -->
+      <button id="btn-scan" class="btn btn-primary btn-block">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        Scan Playlist
+      </button>
+    </section>
+
+    <!-- Scanning Screen -->
+    <section id="screen-scanning" class="screen hidden">
+      <div class="scanning-container">
+        <div class="scanning-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+        <h3>Scanning playlist...</h3>
+        <p id="scan-status" class="scan-status">Loading videos...</p>
+      </div>
+    </section>
+
+    <!-- Results Screen -->
+    <section id="screen-results" class="screen hidden">
+      <!-- Summary bar -->
+      <div class="results-summary">
+        <div class="summary-stats">
+          <span class="stat-matched" id="stat-matched">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-total" id="stat-total">0</span>
+          <span class="stat-label">videos matched</span>
+        </div>
+        <div class="summary-actions">
+          <button id="btn-select-all" class="btn btn-ghost btn-sm">Select All</button>
+          <button id="btn-deselect-all" class="btn btn-ghost btn-sm">Deselect All</button>
+        </div>
+      </div>
+
+      <!-- Results list -->
+      <div id="results-list" class="results-list">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Action bar -->
+      <div class="action-bar">
+        <button id="btn-back" class="btn btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Back
+        </button>
+        <button id="btn-delete" class="btn btn-danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Delete Selected (<span id="delete-count">0</span>)
+        </button>
+      </div>
+    </section>
+
+    <!-- Deleting Screen -->
+    <section id="screen-deleting" class="screen hidden">
+      <div class="deleting-container">
+        <h3>Removing videos...</h3>
+        <p class="deleting-hint">Keep the playlist tab open — don't navigate away.</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="progress-text" id="progress-text">0 / 0</p>
+        <p class="progress-current" id="progress-current">—</p>
+        <button id="btn-cancel-delete" class="btn btn-ghost btn-sm" style="margin-top: 16px;">Stop Cleaning</button>
+      </div>
+    </section>
+
+    <!-- Done Screen -->
+    <section id="screen-done" class="screen hidden">
+      <div class="done-container">
+        <div class="done-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3 id="done-title">Done!</h3>
+        <p id="done-message">Successfully removed videos from your playlist.</p>
+        <div class="done-stats">
+          <div class="done-stat">
+            <span class="done-stat-value" id="done-succeeded">0</span>
+            <span class="done-stat-label">Removed</span>
+          </div>
+          <div class="done-stat" id="done-failed-group">
+            <span class="done-stat-value done-stat-failed" id="done-failed">0</span>
+            <span class="done-stat-label">Failed</span>
+          </div>
+        </div>
+        <button id="btn-done" class="btn btn-primary btn-block">Back to Manager</button>
+      </div>
+    </section>
+
+    <!-- Confirmation Modal -->
+    <div id="modal-confirm" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p id="modal-message">Are you sure you want to remove <strong>0</strong> videos from this playlist?</p>
+        <p class="modal-warning">This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button id="btn-modal-cancel" class="btn btn-ghost">Cancel</button>
+          <button id="btn-modal-confirm" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
